@@ -1,5 +1,7 @@
 # User Service (Microservice of users)
 
+[Дока на русском](./docs/README.ru.md)
+
 __this microservice is designed to manage users in a project. He is responsible for registering, verifying users, and publishing events to Kafka. It can be used in other projects with appropriate environment settings.__
 
 ## Description
