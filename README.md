@@ -1,38 +1,33 @@
-# Users Microservice for the Finance Analyzer project
+# User Service (Microservice of users)
 
-[дока на русском](./docs/README.ru.md)
-
-_The micromicroservice is designed for authentication and authorization in the Finance Analyzer project, but it can also be used in other projects. To integrate, it is enough to configure your environment._
+__this microservice is designed to manage users in a project. He is responsible for registering, verifying users, and publishing events to Kafka. It can be used in other projects with appropriate environment settings.__
 
 ## Description
-The Auth microservice is responsible for user authentication and authorization. It provides an API for logging in, validating tokens, and securing routes. The microservice uses JWT for token management and Redis for data caching.
+Microservice **User Service** is responsible for creating and verifying users, as well as sending events to Kafka. It provides an API for user registration and verification, as well as logs all operations.
 
 ## Functionality
-- **Authentication** via JWT.
-- **Route protection** with token verification.
-- **Caching** data using Redis.
-- **Logging** requests and errors.
-- **Error handling** with centralized middleware.
-- **Integration with User Service** to verify user data.
+- **User registration** – adding to the database.
+- **User Verification** – login and password validation.
+- **Sending events to Kafka** – informing other services about user registration.
+- **Logging** – recording requests and errors.
+- **Error Handling** – Centralized middleware.
 
 ## Technologies used
 - **Node.js** + **Express** is the main framework.
-- **JWT** – for token management.
-- **Redis** – data caching.
-- **Axios** – for interacting with the User Service.
+- **PostgreSQL** – storing user data.
+- **Kafka (kafkajs)** – sending events.
 - **Winston** – logging.
-- **Helmet** and **Compression** – protection and optimization.
-- **Swagger** – API documentation.
+- **Docker** – containerization.
 
 ## Project structure
-``
-api-gateway/
+```
+user-service/
 │── src/
-,── config/ # Configuration files
-│ ├── middleware/ # Middleware (logging, errors, limits)
-│ ├── monitoring/ # Monitoring (OpenTelemetry)
-│ ├── routes/           # API routes
-│   ├── utils/            # Utilities and constants
+│ ├── config/ # Configuration files (Kafka, DB)
+│   ├── kafka/            # Kafka producer
+│   ├── routes/           # API routes
+│   ├── services/         # Business logic (registration, verification)
+│ ├── utils/            # Logging and auxiliary functions
 │   ├── app.ts # Main Application
 ,── server.ts # Starting the server
 │── docker-compose.yml # Containerization
@@ -47,35 +42,38 @@ yarn start
 ```
 
 ### Launching in Docker
-```bash
+``bash
 docker-compose up --build
 ```
 
 ## Environment variables (.env)
-The environment variable is specially created and is not hidden. 
-```
-PORT=3000
-SECRET_KEY=supersecret
-USER_SERVICE_URL=http://user-service:4000
-USER_SERVICE_URL_CHECK_USER=/check-user
-USER_SERVICE_URL_LOGIN=/login
-USER_SERVICE_URL_PROTECTED=/protected
+``
+PORT=4000
+DB_HOST=database
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=secret
+DB_NAME=users
+KAFKA_BROKERS=kafka:9092
 ```
 
 ## API Routes
-### Authentication
-- **POST** `/login` – JWT login.
-- **GET** `/protected` – Token verification (cached in Redis).
+### Registration
+- **POST** `/register` – Registration of a new user.
+  - **Request Body:** `{ "login": "user", "password": "pass" }`
+- **Response:** `{ "message": "User registered", "user": { "id": 1, "login": "user" } }`
 
-### User Service
-- **POST** `/user/register` – User registration.
+### User verification
+- **POST** `/check-user` – Login and password verification.
+  - **Request Body:** `{ "login": "user", "password": "pass" }`
+- **Response:** `{ "id": 1, "login": "user"}` (or `404 Not Found`)
 
-## Monitoring
-The microservice supports logging via Winston. Logs are saved to files and output to the console.
+## Logging and monitoring
+- Logging is done via **Winston**.
+- Errors are handled centrally.
 
 ## Author
-
-[Kirill Doroshev (DKMFzF)](https://vk.com/dkmfzf )
+[Kirill Doroshev (DKMfzf)](https://github.com/твой-гит )
 
 ## License
 MIT
