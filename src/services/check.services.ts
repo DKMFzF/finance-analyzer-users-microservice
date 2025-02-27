@@ -1,6 +1,10 @@
 import pool from '../config/db.config';
 import logger from '../utils/logger/logger';
 
+/**
+ * проверка пользователя
+ */
+
 const SQL_REQUEST_CHECK_USER = 'SELECT * FROM users WHERE login = $1 AND password = $2';
 
 const checkUser = async (login: string, password: string) => {

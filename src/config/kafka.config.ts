@@ -4,6 +4,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+/**
+ * подгрузка конфига для kafka
+ */
+
 logger.info("[LOG]: Loading kafka.config environment variables");
 
 if (!process.env.KAFKA_BROKERS) {

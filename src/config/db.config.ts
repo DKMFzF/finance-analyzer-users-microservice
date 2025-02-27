@@ -1,6 +1,10 @@
 // @ts-ignore
 import { Pool } from 'pg';
 
+/**
+ * добавление конфига для базы данных
+ */
+
 // TRUNCATE TABLE users RESTART IDENTITY;
 
 const pool = new Pool({

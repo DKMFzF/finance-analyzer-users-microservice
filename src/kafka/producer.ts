@@ -1,6 +1,10 @@
 import logger from '../utils/logger/logger';
 import producer from '../config/kafka.config';
 
+/**
+ * добавление в топик сообщения о регистрации пользователя
+ */
+
 export async function publishUserRegisteredEvent(user: { id: number; login: string }) {
   logger.info('[LOG]: Publishing event UserRegistered to Kafka');
   try {

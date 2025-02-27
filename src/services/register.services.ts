@@ -1,6 +1,10 @@
 import pool from '../config/db.config';
 import logger from '../utils/logger/logger';
 
+/**
+ * регистрация пользователя
+ */
+
 const SQL_REQUEST_REGISTER_USER = 'INSERT INTO users (login, password) VALUES ($1, $2) RETURNING *';
 
 export const registerUser = async (login: string, password: string) => {
