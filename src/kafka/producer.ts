@@ -1,13 +1,8 @@
-import { Kafka, Producer } from 'kafkajs';
-
-const kafka = new Kafka({
-  clientId: 'user-service',
-  brokers: [process.env.KAFKA_BROKERS || 'kafka:9092'],
-});
-
-const producer: Producer = kafka.producer();
+import logger from '../utils/logger/logger';
+import producer from '../config/kafka.config';
 
 export async function publishUserRegisteredEvent(user: { id: number; login: string }) {
+  logger.info('[LOG]: Publishing event UserRegistered to Kafka');
   try {
     await producer.connect();
     await producer.send({
@@ -16,9 +11,9 @@ export async function publishUserRegisteredEvent(user: { id: number; login: stri
         { value: JSON.stringify(user) },
       ],
     });
-    console.log('[LOG]: Event UserRegistered published to Kafka');
+    logger.info('[LOG]: Event UserRegistered published to Kafka');
   } catch (error) {
-    console.error('[ERROR]: Failed to publish event to Kafka:', error);
+    logger.error('[ERROR]: Failed to publish event to Kafka:', error);
   } finally {
     await producer.disconnect();
   }

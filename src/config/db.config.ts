@@ -1,6 +1,8 @@
 // @ts-ignore
 import { Pool } from 'pg';
 
+// TRUNCATE TABLE users RESTART IDENTITY;
+
 const pool = new Pool({
   user: process.env.PGUSER || 'postgres',
   host: process.env.PGHOST || 'postgres',
