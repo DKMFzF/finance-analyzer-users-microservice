@@ -1,4 +1,4 @@
 export const enum LOGS {
-  SERVICE_INIT = "[LOG]: Auth Service init",
-  SERVICE_START = "[LOG]: Auth Service start on port",
+  SERVICE_INIT = "[LOG]: User Service init",
+  SERVICE_START = "[LOG]: User Service start on port",
 }

@@ -6,8 +6,6 @@ import { Kafka } from 'kafkajs';
 const app = express();
 app.use(express.json());
 
-const PORT: number = Number(process.env.PORT) || 4000;
-
 // Настройка подключения к PostgreSQL
 const pool = new Pool({
   user: process.env.PGUSER || 'postgres',
@@ -69,4 +67,4 @@ app.post('/register', async (req: Request, res: Response) => {
   }
 });
 
-app.listen(PORT, () => console.log(`User Service запущен на порту ${PORT}`));
+export default app;
