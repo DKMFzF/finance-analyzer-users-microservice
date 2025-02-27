@@ -1,12 +1,8 @@
-import express from 'express';
-import userRoutes from './routes/user.routes';
-// import { logInfo } from './utils/logger';
+import logger from './utils/logger/logger';
+import LOGS from "./utils/custom.logs";
+import app from "./app";
+import config from "./config/index.config";
 
-const app = express();
-app.use(express.json());
+const PORT = config.PORT;
 
-const PORT: number = Number(process.env.PORT) || 4000;
-
-app.use('/', userRoutes);
-
-app.listen(PORT, () => console.log("ИДЁТ ВОЗНЯ"));
+app.listen(PORT, () => logger.info(LOGS.SERVICE_START, PORT));

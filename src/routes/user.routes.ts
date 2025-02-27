@@ -1,19 +1,18 @@
 import express, { Request, Response } from 'express';
-import pool from '../config/db.config';
+import { registerUser, checkUser } from '../services/register.services';
 import { publishUserRegisteredEvent } from '../kafka/producer';
 
 const router = express.Router();
 
+// Регистрация пользователя
 router.post('/register', async (req: Request, res: Response) => {
   const { login, password } = req.body;
 
   try {
-    const result = await pool.query(
-      'INSERT INTO users (login, password) VALUES ($1, $2) RETURNING *',
-      [login, password]
-    );
-    const user = result.rows[0];
+    // Использование сервисного слоя для регистрации пользователя
+    const user = await registerUser(login, password);
 
+    // Публикация события в Kafka
     await publishUserRegisteredEvent({ id: user.id, login: user.login });
 
     res.json({
@@ -28,17 +27,16 @@ router.post('/register', async (req: Request, res: Response) => {
   }
 });
 
+// Проверка пользователя
 router.post('/check-user', async (req: Request, res: Response) => {
   const { login, password } = req.body;
 
   try {
-    const result = await pool.query(
-      'SELECT * FROM users WHERE login = $1 AND password = $2',
-      [login, password]
-    );
+    // Использование сервисного слоя для проверки пользователя
+    const user = await checkUser(login, password);
 
-    if (result.rows.length > 0) {
-      res.json(result.rows[0]);
+    if (user) {
+      res.json(user);
     } else {
       res.status(404).json({ message: 'Пользователь не найден' });
     }
