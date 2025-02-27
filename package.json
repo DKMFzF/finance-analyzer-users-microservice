@@ -24,13 +24,27 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "kafkajs": "^2.2.4",
-    "pg": "^8.13.3"
+    "pg": "^8.13.3",
+    "compression": "^1.8.0",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "joi": "^17.13.3",
+    "redis": "^4.7.0",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.17.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^20.11.19",
     "tsc-watch": "^6.0.4",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "@types/jest": "^29.5.14",
+    "@types/supertest": "^6.0.2",
+    "jest": "^29.7.0",
+    "nock": "^14.0.1",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.6"
   }
 }
