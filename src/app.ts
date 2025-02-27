@@ -1,70 +1,95 @@
-import express, { Request, Response } from 'express';
-// @ts-ignore
-import { Pool } from 'pg';
-import { Kafka } from 'kafkajs';
+// import express, { Request, Response } from 'express';
+// // @ts-ignore
+// import { Pool } from 'pg';
+// import { Kafka } from 'kafkajs';
 
-const app = express();
-app.use(express.json());
+// const app = express();
+// app.use(express.json());
 
-// Настройка подключения к PostgreSQL
-const pool = new Pool({
-  user: process.env.PGUSER || 'postgres',
-  host: process.env.PGHOST || 'postgres',
-  database: process.env.PGDATABASE || 'auth_db',
-  password: process.env.PGPASSWORD || 'root',
-  port: Number(process.env.PGPORT) || 5432,
-});
+// const PORT: number = Number(process.env.PORT) || 4000;
 
-// Настройка Kafka
-const kafka = new Kafka({
-  clientId: 'user-service',
-  brokers: [process.env.KAFKA_BROKERS || 'kafka:9092'],
-});
+// // Настройка подключения к PostgreSQL
+// const pool = new Pool({
+//   user: process.env.PGUSER || 'postgres',
+//   host: process.env.PGHOST || 'postgres',
+//   database: process.env.PGDATABASE || 'auth_db',
+//   password: process.env.PGPASSWORD || 'root',
+//   port: Number(process.env.PGPORT) || 5432,
+// });
 
-const producer = kafka.producer();
+// // Настройка Kafka
+// const kafka = new Kafka({
+//   clientId: 'user-service',
+//   brokers: [process.env.KAFKA_BROKERS || 'kafka:9092'],
+// });
 
-// Функция для публикации события
-async function publishUserRegisteredEvent(user: { id: number; login: string }) {
-  try {
-    await producer.connect();
-    await producer.send({
-      topic: 'user-registered',
-      messages: [
-        { value: JSON.stringify(user) },
-      ],
-    });
-    console.log('[LOG]: Event UserRegistered published to Kafka');
-  } catch (error) {
-    console.error('[ERROR]: Failed to publish event to Kafka:', error);
-  } finally {
-    await producer.disconnect();
-  }
-}
+// const producer = kafka.producer();
 
-// Эндпоинт регистрации
-app.post('/register', async (req: Request, res: Response) => {
-  const { login, password } = req.body;
+// // Функция для публикации события
+// async function publishUserRegisteredEvent(user: { id: number; login: string }) {
+//   try {
+//     await producer.connect();
+//     await producer.send({
+//       topic: 'user-registered',
+//       messages: [
+//         { value: JSON.stringify(user) },
+//       ],
+//     });
+//     console.log('[LOG]: Event UserRegistered published to Kafka');
+//   } catch (error) {
+//     console.error('[ERROR]: Failed to publish event to Kafka:', error);
+//   } finally {
+//     await producer.disconnect();
+//   }
+// }
 
-  try {
-    const result = await pool.query(
-      'INSERT INTO users (login, password) VALUES ($1, $2) RETURNING *',
-      [login, password]
-    );
-    const user = result.rows[0];
+// // Эндпоинт регистрации
+// app.post('/register', async (req: Request, res: Response) => {
+//   const { login, password } = req.body;
 
-    // Публикация события в Kafka
-    await publishUserRegisteredEvent({ id: user.id, login: user.login });
+//   try {
+//     const result = await pool.query(
+//       'INSERT INTO users (login, password) VALUES ($1, $2) RETURNING *',
+//       [login, password]
+//     );
+//     const user = result.rows[0];
 
-    res.json({
-      message: 'Пользователь зарегистрирован',
-      user,
-    });
-  } catch (error: any) {
-    res.status(400).json({
-      message: 'Ошибка регистрации',
-      error: error.message,
-    });
-  }
-});
+//     // Публикация события в Kafka
+//     await publishUserRegisteredEvent({ id: user.id, login: user.login });
 
-export default app;
+//     res.json({
+//       message: 'Пользователь зарегистрирован',
+//       user,
+//     });
+//   } catch (error: any) {
+//     res.status(400).json({
+//       message: 'Ошибка регистрации',
+//       error: error.message,
+//     });
+//   }
+// });
+
+// // Эндпоинт проверки пользователя
+// app.post('/check-user', async (req: Request, res: Response) => {
+//   const { login, password } = req.body;
+
+//   try {
+//     const result = await pool.query(
+//       'SELECT * FROM users WHERE login = $1 AND password = $2',
+//       [login, password]
+//     );
+
+//     if (result.rows.length > 0) {
+//       res.json(result.rows[0]);
+//     } else {
+//       res.status(404).json({ message: 'Пользователь не найден' });
+//     }
+//   } catch (error: any) {
+//     res.status(500).json({
+//       message: 'Ошибка сервера',
+//       error: error.message,
+//     });
+//   }
+// });
+
+// app.listen(PORT, () => console.log(`User Service запущен на порту ${PORT}`));
