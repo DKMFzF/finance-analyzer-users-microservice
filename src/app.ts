@@ -4,10 +4,6 @@ import logger from "./utils/logger/logger";
 import LOGS from "./utils/custom.logs";
 import { errorHandler } from "./middleware/error.middleware";
 
-/**
- * init sevice
- */
-
 const app = express();
 app.use(express.json());
 
